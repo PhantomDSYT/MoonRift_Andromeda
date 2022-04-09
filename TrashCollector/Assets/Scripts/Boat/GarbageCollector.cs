@@ -7,28 +7,9 @@ public class GarbageCollector : MonoBehaviour
     private int garbage = 0;
     public int garbageLimit;
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if(collision.gameObject.CompareTag("Garbage"))
-    //    {
-    //        if (garbage < garbageLimit)
-    //        {
-    //            Destroy(collision.gameObject);
-    //            garbage++;
-    //            Debug.Log("Garbage count : " + garbage);
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("Garbage Full");
-    //        }
-            
-    //    }
-        
-    //}
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("trash"))
+        if(collision.gameObject.CompareTag("Garbage"))
         {
             if (garbage < garbageLimit)
             {
@@ -40,7 +21,8 @@ public class GarbageCollector : MonoBehaviour
             {
                 Debug.Log("Garbage Full");
             }
-
+            
         }
+        
     }
 }
