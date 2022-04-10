@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AISpawning : MonoBehaviour
 {
@@ -34,8 +36,11 @@ public class AISpawning : MonoBehaviour
     public void SpawnEnemy()
     {
         GameObject spawnedEnemy = Instantiate(enemyVeh);
+        spawnedEnemy.GetComponent<AIBehavior>().nameTags = spawnedEnemy.GetComponentInChildren<TextMeshPro>();
         spawnedEnemy.tag = "boat";
         spawnedEnemy.GetComponent<AIBehavior>().uniqueID = uniqueID;
+
+        //CANNOT CHANGE TEXT HERE, CAUSES MULTI-SPAWN
         uniqueID++;
         System.Random rnd = new System.Random();
         int x = 0;

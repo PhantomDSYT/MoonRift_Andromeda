@@ -22,5 +22,18 @@ public class BoatInputHandler : MonoBehaviour
 
         //Update input vectors of PlayerMovement --> SetInputVector
         playerMovement.SetInputVector(inputVector);
+
+        AudioSource[] sources = FindObjectsOfType<AudioSource>();
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            foreach (AudioSource audio in sources)
+            {
+                if (audio.mute)
+                {
+                    audio.mute = false;
+                }
+                else { audio.mute = true; }
+            }
+        }
     }
 }
