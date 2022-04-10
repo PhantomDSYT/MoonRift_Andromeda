@@ -1,26 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AIBehavior : MonoBehaviour
 {
+    public Vector2[] docks;
     //needed for the enemies, basic/simple default
     private float speed = .5f;
     private int HP = 10;
     private float timePassedSincePickup;
+    public int trashPickedUp;
     private string username;
     public int uniqueID;
 
     //camRadius used if need to spawn off camera
     private int camRadius;
-    private string[] collectiveNames;
-    [SerializeField] private TextMesh nameTags;
+    public string[] collectiveNames = {"MrKrabs","bubbles","floaty","Duck","Lazlo", "ARGGGGGG","SoulFate","ectoPlasmic","lil","Phantom","Player_0485","sanic"};
+    public TextMeshPro nameTags;
 
     private int xDest;
     private int yDest;
     private bool destSet;
     Rigidbody2D rgb;
     private bool headedtoTrash;
+    private bool checkingIn;
+
+    private bool waiting;
+
+    private bool dead;
 
     AudioSource splashSource;
     // Start is called before the first frame update
@@ -28,61 +37,90 @@ public class AIBehavior : MonoBehaviour
     {
         headedtoTrash = false;
         destSet = false;
+        checkingIn = false;
+        dead = false;
+        trashPickedUp = 0;
         splashSource = gameObject.GetComponent<AudioSource>();
         timePassedSincePickup = Time.realtimeSinceStartup;
         rgb = gameObject.GetComponent<Rigidbody2D>();
+
         //camRadius = (int)FindObjectOfType<Camera>().fieldOfView;
-        collectiveNames = new string[] { "MrKrabs", "bubbles","floaty","Duck","Lazlo","ARGGGGGG","SoulFate","ectoPlasmic","lil","Phantom","Player_0485" };
     }
     private void Awake()
     {
         ///has to be included or the boats don't appear
         transform.right = new Vector3(xDest, yDest) - transform.position;
+        
     }
 
     private void FixedUpdate()
     {
         ////NEEDS TO BE FIXED
-        if (!TimeCheck(Time.realtimeSinceStartup))
+        if(!checkingIn&&!dead)
         {
-            //HP--;
-            //Debug.Log(HP);
-        }
+            if (!TimeCheck(Time.realtimeSinceStartup))
+            {
+                //HP--;
+                //Debug.Log(HP);
+            }
 
-        if (HP <= 0)
-        {
-            System.Random rnd = new System.Random();
-            gameObject.transform.position = new Vector2(rnd.Next(-10, 10), rnd.Next(-10, 10));
-            username = collectiveNames[rnd.Next(0, 11)];
-            HP = 10;
+            if (HP < 0)
+            {
+                System.Random rnd = new System.Random();
+                gameObject.transform.position = new Vector2(rnd.Next(-10, 10), rnd.Next(-10, 10));
+                username = collectiveNames[rnd.Next(0, 11)];
+                HP = 10;
+            }
+            //else
+            //{
+            //    dead = true;
+            //    gameObject.GetComponent<MeshRenderer>().enabled = false;
+            //    gameObject.transform.position = new Vector2(-40, -50);
+            //    Invoke("death", 10);
+            //}
+
+
+            if (trashPickedUp % 5 == 0 && trashPickedUp != 0)
+            {
+                checkIn();
+                checkingIn = true;
+            }
         }
+        else { checkIn(); }
     }
 
     //Update is called once per frame
     void Update()
     {
+        if(nameTags.text=="New Text")
+        {
+            nameTags.text=setName();
+        }
         targetTrash();
         boundsCheck();
-        if (!headedtoTrash)
+       if(!checkingIn&&!dead)
         {
-            System.Random rnd = new System.Random();
-            int re_roll = rnd.Next(0, 101);
-            re_roll = (int)re_roll * uniqueID;
-            for (int i = 0; i < re_roll; i++)
+            if (!headedtoTrash)
             {
-                rnd.Next(0, 101);
+                System.Random rnd = new System.Random();
+                int re_roll = rnd.Next(0, 101);
+                re_roll = (int)re_roll * uniqueID;
+                for (int i = 0; i < re_roll; i++)
+                {
+                    rnd.Next(0, 101);
+                }
+                if (rnd.Next(0, 101) * Time.deltaTime % 2 == 0)
+                {
+                    moveForward();
+                }
+                else if (rnd.Next(0, 101) % 10 == 0)
+                { moveBack(); }
             }
-            if (rnd.Next(0, 101)*Time.deltaTime % 2 == 0)
+            else
             {
-                moveForward();
+                Vector2 destination = new Vector2(xDest, yDest);
+                gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, destination, .005f);
             }
-            else if (rnd.Next(0, 101) % 10 == 0)
-            { moveBack(); }
-        }
-        else
-        {
-            Vector2 destination = new Vector2(xDest,yDest);
-            gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, destination, .005f);
         }
     }
 
@@ -104,24 +142,27 @@ public class AIBehavior : MonoBehaviour
         GameObject[] trashPieces = GameObject.FindGameObjectsWithTag("trash");
 
         float distance = 0.0f;
-        float mindistance= Vector2.Distance(gameObject.transform.position, trashPieces[0].transform.position);
-        int placer = 0;
-        for(int i=0; i<trashPieces.Length-1;i++)
+        if(trashPieces.Length>0)
         {
-            distance = Vector2.Distance(gameObject.transform.position, trashPieces[i].transform.position);
-            if(distance<mindistance)
+            float mindistance = Vector2.Distance(gameObject.transform.position, trashPieces[0].transform.position);
+            int placer = 0;
+            for (int i = 0; i < trashPieces.Length - 1; i++)
             {
-                mindistance = distance;
-                placer = i;
+                distance = Vector2.Distance(gameObject.transform.position, trashPieces[i].transform.position);
+                if (distance < mindistance)
+                {
+                    mindistance = distance;
+                    placer = i;
+                }
             }
+            if (mindistance < 10)
+            {
+                xDest = (int)trashPieces[placer].transform.position.x;
+                yDest = (int)trashPieces[placer].transform.position.y;
+                headedtoTrash = true;
+            }
+            else { headedtoTrash = false; }
         }
-        if(mindistance<10)
-        {
-            xDest = (int)trashPieces[placer].transform.position.x;
-            yDest = (int)trashPieces[placer].transform.position.y;
-            headedtoTrash = true;
-        }
-        else { headedtoTrash = false; }
     }
 
     void moveForward()
@@ -232,14 +273,14 @@ public class AIBehavior : MonoBehaviour
         {
             gameObject.transform.position = new Vector2(34, gameObject.transform.position.y);
         }
-        else if(gameObject.transform.position.x<-35)
+        else if(gameObject.transform.position.x<-40)
         {
-            gameObject.transform.position = new Vector2(-34, gameObject.transform.position.y);
+            gameObject.transform.position = new Vector2(-39, gameObject.transform.position.y);
         }
 
-        if (gameObject.transform.position.y > 35)
+        if (gameObject.transform.position.y > 17)
         {
-            gameObject.transform.position = new Vector2(gameObject.transform.position.x, 34);
+            gameObject.transform.position = new Vector2(gameObject.transform.position.x, 16);
         }
         else if (gameObject.transform.position.y < -35)
         {
@@ -247,33 +288,79 @@ public class AIBehavior : MonoBehaviour
         }
     }
 
+    void checkIn()
+    {
+        Debug.Log("checkin "+uniqueID);
+        System.Random rnd = new System.Random();
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, docks[uniqueID], speed);
+
+        if ((Vector2)gameObject.transform.position == docks[uniqueID])
+        {
+            Debug.Log("checkout " + uniqueID);
+            Invoke("checkOut", 10);
+        }
+    }
+
+    void checkOut()
+    {
+        checkingIn = false;
+    }
+
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.Log("collision");
         splashSource.Play();
 
         int leanX=(int)gameObject.transform.position.x;
         int leanY = (int)gameObject.transform.position.y;
-        if (leanX < 0)
+        if(collision.gameObject.tag!="boat")
         {
-            gameObject.transform.position = new Vector2(gameObject.transform.position.x + 1, gameObject.transform.position.y);
-        }
-        else if (leanX > 0)
-        {
-            gameObject.transform.position = new Vector2(gameObject.transform.position.x - 1, gameObject.transform.position.y);
-        }
+            if (leanX < 0)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x + 1, gameObject.transform.position.y);
+            }
+            else if (leanX > 0)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x - 1, gameObject.transform.position.y);
+            }
 
-        if (leanY < 0)
-        {
-            gameObject.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + 1);
+            if (leanY < 0)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + 1);
+            }
+            else { gameObject.transform.position = new Vector2(gameObject.transform.position.x + 1, gameObject.transform.position.y - 1); }
+
         }
-        else { gameObject.transform.position = new Vector2(gameObject.transform.position.x + 1, gameObject.transform.position.y - 1); }
-        
-        if(collision.gameObject.tag=="trash")
+        if (collision.gameObject.tag=="trash")
         {
-            //Debug.Log("trash");
             Destroy(collision.gameObject);
+            trashPickedUp++;
         }
+    }
+
+    void death()
+    {
+        gameObject.GetComponent<MeshRenderer>().enabled = true;
+        dead = false;
+
+        System.Random rnd = new System.Random();
+        for (int i = 0; i < uniqueID; i++)
+        {
+            gameObject.transform.position = new Vector2(rnd.Next(-35, 40), rnd.Next(-35, 17));
+            nameTags.text = collectiveNames[rnd.Next(0, 11)];
+        }
+    }
+
+    public string setName()
+    {
+        int i = gameObject.GetComponent<AIBehavior>().uniqueID;
+        System.Random rnd = new System.Random();
+        string ret="";
+        for(int x=0;x<i;x++)
+        {
+            rnd.Next(0, 11);
+        }
+        ret = collectiveNames[rnd.Next(0, 11)];
+        return ret;
     }
 }
 
