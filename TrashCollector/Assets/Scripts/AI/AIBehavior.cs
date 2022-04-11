@@ -92,10 +92,10 @@ public class AIBehavior : MonoBehaviour
     //Update is called once per frame
     void Update()
     {
-        if(nameTags.text=="New Text")
-        {
-            nameTags.text=setName();
-        }
+        //if(nameTags.text=="New Text")
+        //{
+        //    nameTags.text=setName();
+        //}
         targetTrash();
         boundsCheck();
        if(!checkingIn&&!dead)

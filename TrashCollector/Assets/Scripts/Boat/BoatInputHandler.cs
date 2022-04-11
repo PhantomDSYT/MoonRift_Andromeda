@@ -6,9 +6,10 @@ public class BoatInputHandler : MonoBehaviour
 {
     //Component
     PlayerMovement playerMovement;
-
+    private bool atIsland;
     private void Awake()
     {
+        atIsland = false;
         playerMovement = GetComponent<PlayerMovement>();
     }
 
@@ -24,7 +25,7 @@ public class BoatInputHandler : MonoBehaviour
         playerMovement.SetInputVector(inputVector);
 
         AudioSource[] sources = FindObjectsOfType<AudioSource>();
-        if(Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.M))
         {
             foreach (AudioSource audio in sources)
             {
@@ -35,5 +36,21 @@ public class BoatInputHandler : MonoBehaviour
                 else { audio.mute = true; }
             }
         }
+        if (atIsland)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("Island vibes");
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        atIsland = true;
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        atIsland = false;
     }
 }
