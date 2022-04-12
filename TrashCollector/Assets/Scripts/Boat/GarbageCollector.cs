@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GarbageCollector : MonoBehaviour
 {
-    private int garbage = 0;
+    public int garbage = 0;
     public int garbageLimit;
 
     //private void OnTriggerEnter2D(Collider2D collision)

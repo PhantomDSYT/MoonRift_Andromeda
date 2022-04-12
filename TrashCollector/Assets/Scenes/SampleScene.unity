@@ -3896,6 +3896,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3911,6 +3912,19 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc21d198afd848a458400b963f4b4b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 770281186}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -4010,6 +4024,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boat
       objectReference: {fileID: 0}
+    - target: {fileID: 9191698878440292897, guid: f36929bd050b3bf4e96e57b383048793, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 9191698878440292902, guid: f36929bd050b3bf4e96e57b383048793, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -4056,6 +4074,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f36929bd050b3bf4e96e57b383048793, type: 3}
+--- !u!1 &770281180 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9191698878440292897, guid: f36929bd050b3bf4e96e57b383048793, type: 3}
+  m_PrefabInstance: {fileID: 646090128}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &770281186 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9191698878440292902, guid: f36929bd050b3bf4e96e57b383048793, type: 3}
+  m_PrefabInstance: {fileID: 646090128}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1497454687
 GameObject:
   m_ObjectHideFlags: 0
@@ -57161,6 +57189,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 655317912, guid: 0ec86fa00ce6bf74fbefde882f847562, type: 3}
+      propertyPath: boat
+      value: 
+      objectReference: {fileID: 770281180}
     - target: {fileID: 3904371419466116129, guid: 0ec86fa00ce6bf74fbefde882f847562, type: 3}
       propertyPath: m_Name
       value: IslandTrigger
