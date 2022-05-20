@@ -1,0 +1,4 @@
+repository "TrashCollector@teamandromeda@cloud"
+  path "/"
+    smartbranch "/main/Anelka" changeset "215"                                                                                                     
+     

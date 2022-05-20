@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 80dde8aa54732c34f96de8409529a660
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {instanceID: 0}
+  - levelText: {instanceID: 0}
+  - priceText: {instanceID: 0}
+  - BuyButton: {instanceID: 0}
+  - shopManager: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
